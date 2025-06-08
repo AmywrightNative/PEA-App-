@@ -14,6 +14,11 @@
             border-color: #3b82f6;
             color: #3b82f6;
         }
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
         @media print {
             body * {
                 visibility: hidden;
@@ -69,10 +74,18 @@
                 </div>
                 <div class="step flex-1 flex items-center justify-center border-b-2 pb-2 text-gray-400" data-step="3">
                     <span class="rounded-full bg-gray-300 text-gray-600 w-8 h-8 flex items-center justify-center mr-2">3</span>
-                    <span class="font-medium">Species</span>
+                    <span class="font-medium">Buildings</span>
                 </div>
-                 <div class="step flex-1 flex items-center justify-center border-b-2 pb-2 text-gray-400" data-step="4">
+                <div class="step flex-1 flex items-center justify-center border-b-2 pb-2 text-gray-400" data-step="4">
                     <span class="rounded-full bg-gray-300 text-gray-600 w-8 h-8 flex items-center justify-center mr-2">4</span>
+                    <span class="font-medium">Trees</span>
+                </div>
+                 <div class="step flex-1 flex items-center justify-center border-b-2 pb-2 text-gray-400" data-step="5">
+                    <span class="rounded-full bg-gray-300 text-gray-600 w-8 h-8 flex items-center justify-center mr-2">5</span>
+                    <span class="font-medium">Prot. Species</span>
+                </div>
+                 <div class="step flex-1 flex items-center justify-center border-b-2 pb-2 text-gray-400" data-step="6">
+                    <span class="rounded-full bg-gray-300 text-gray-600 w-8 h-8 flex items-center justify-center mr-2">6</span>
                     <span class="font-medium">Summary</span>
                 </div>
             </div>
@@ -157,13 +170,128 @@
                 </div>
 
                 <div id="step-3" class="step-content hidden">
-                    <h2 class="text-2xl font-semibold text-gray-700 mb-6">3. Notable Species</h2>
-                    <div id="species-container" class="space-y-6"></div>
-                    <button type="button" id="add-species-btn" class="mt-6 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700">Add Species</button>
+                    <h2 class="text-2xl font-semibold text-gray-700 mb-6">3. Buildings</h2>
+                    <div id="buildings-container" class="space-y-6"></div>
+                    <button type="button" id="add-building-btn" class="mt-6 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700">Add Building</button>
+                </div>
+                
+                <div id="step-4" class="step-content hidden">
+                    <h2 class="text-2xl font-semibold text-gray-700 mb-6">4. Trees</h2>
+                    <div id="trees-container" class="space-y-6"></div>
+                    <button type="button" id="add-tree-btn" class="mt-6 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700">Add Tree</button>
                 </div>
 
-                <div id="step-4" class="step-content hidden">
-                    <h2 class="text-2xl font-semibold text-gray-700 mb-6">4. Summary and Report</h2>
+                <div id="step-5" class="step-content hidden">
+                    <h2 class="text-2xl font-semibold text-gray-700 mb-6">5. Protected Species Potential</h2>
+                    <div id="species-accordion" class="space-y-2">
+                        <!-- Foraging & Commuting Bats -->
+                        <div class="accordion-item bg-gray-50 rounded-lg border">
+                           <button type="button" class="accordion-header w-full text-left p-4 font-semibold">Foraging & Commuting Bats</button>
+                           <div class="accordion-content px-4 pb-4">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div class="md:col-span-2">
+                                        <label class="block text-sm font-medium">Description of habitat</label>
+                                        <textarea class="w-full mt-1 p-2 border rounded-lg" data-species-field="bats_habitat_desc" rows="3"></textarea>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium">Further survey required?</label>
+                                        <select class="w-full mt-1 p-2 border rounded-lg bg-white" data-species-field="bats_survey_req">
+                                            <option value="">Select...</option>
+                                            <option value="Yes">Yes</option>
+                                            <option value="No">No</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium">Suitability for survey</label>
+                                        <select class="w-full mt-1 p-2 border rounded-lg bg-white" data-species-field="bats_survey_suitability">
+                                            <option value="">Select...</option>
+                                            <option value="Low">Low</option>
+                                            <option value="Moderate">Moderate</option>
+                                            <option value="High">High</option>
+                                        </select>
+                                    </div>
+                                    <div><label class="block text-sm font-medium">How many transects</label><input type="number" class="w-full mt-1 p-2 border rounded-lg" data-species-field="bats_transects"></div>
+                                    <div><label class="block text-sm font-medium">How many VPs</label><input type="number" class="w-full mt-1 p-2 border rounded-lg" data-species-field="bats_vps"></div>
+                                </div>
+                           </div>
+                        </div>
+                        <!-- Hazel Dormice -->
+                        <div class="accordion-item bg-gray-50 rounded-lg border">
+                           <button type="button" class="accordion-header w-full text-left p-4 font-semibold">Hazel Dormice</button>
+                           <div class="accordion-content px-4 pb-4">
+                                <label class="block text-sm font-medium">Habitat Suitability</label>
+                                <textarea class="w-full mt-1 p-2 border rounded-lg" data-species-field="dormice_habitat"></textarea>
+                                <label class="block text-sm font-medium mt-2">Evidence Found (e.g., nuts, nests)</label>
+                                <textarea class="w-full mt-1 p-2 border rounded-lg" data-species-field="dormice_evidence"></textarea>
+                           </div>
+                        </div>
+                        <!-- Badger -->
+                        <div class="accordion-item bg-gray-50 rounded-lg border">
+                           <button type="button" class="accordion-header w-full text-left p-4 font-semibold">Badger</button>
+                           <div class="accordion-content px-4 pb-4">
+                                <label class="block text-sm font-medium">Field Signs (latrines, tracks, hairs etc.)</label>
+                                <textarea class="w-full mt-1 p-2 border rounded-lg" data-species-field="badger_signs"></textarea>
+                                <div class="mt-2"><label class="inline-flex items-center"><input type="checkbox" class="rounded" data-species-field="badger_sett_onsite"> <span class="ml-2">Sett on site?</span></label></div>
+                                <div class="mt-2"><label class="inline-flex items-center"><input type="checkbox" class="rounded" data-species-field="badger_buffer_checked"> <span class="ml-2">30m buffer checked?</span></label></div>
+                           </div>
+                        </div>
+                        <!-- Reptiles -->
+                        <div class="accordion-item bg-gray-50 rounded-lg border">
+                           <button type="button" class="accordion-header w-full text-left p-4 font-semibold">Reptiles</button>
+                           <div class="accordion-content px-4 pb-4">
+                                <label class="block text-sm font-medium">Habitat Suitability (foraging, basking, refugia)</label>
+                                <textarea class="w-full mt-1 p-2 border rounded-lg" data-species-field="reptiles_habitat"></textarea>
+                           </div>
+                        </div>
+                        <!-- Great Crested Newts -->
+                        <div class="accordion-item bg-gray-50 rounded-lg border">
+                           <button type="button" class="accordion-header w-full text-left p-4 font-semibold">Great Crested Newts</button>
+                           <div class="accordion-content px-4 pb-4">
+                                <label class="block text-sm font-medium">HSI Score (if applicable)</label>
+                                <input type="text" class="w-full mt-1 p-2 border rounded-lg" data-species-field="gcn_hsi">
+                                <label class="block text-sm font-medium mt-2">Terrestrial Habitat Quality</label>
+                                <textarea class="w-full mt-1 p-2 border rounded-lg" data-species-field="gcn_habitat"></textarea>
+                                <label class="block text-sm font-medium mt-2">Ponds on/within 500m?</label>
+                                <select class="w-full mt-1 p-2 border rounded-lg bg-white" data-species-field="gcn_ponds">
+                                    <option value="">Select...</option>
+                                    <option value="Yes">Yes</option>
+                                    <option value="No">No</option>
+                                </select>
+                           </div>
+                        </div>
+                        <!-- Birds -->
+                        <div class="accordion-item bg-gray-50 rounded-lg border">
+                           <button type="button" class="accordion-header w-full text-left p-4 font-semibold">Birds</button>
+                           <div class="accordion-content px-4 pb-4">
+                                <label class="block text-sm font-medium">Nesting Opportunities</label>
+                                <textarea class="w-full mt-1 p-2 border rounded-lg" data-species-field="birds_nesting"></textarea>
+                                <label class="block text-sm font-medium mt-2">Notable Species Observed</label>
+                                <textarea class="w-full mt-1 p-2 border rounded-lg" data-species-field="birds_observed"></textarea>
+                           </div>
+                        </div>
+                         <!-- Riparian Mammals -->
+                        <div class="accordion-item bg-gray-50 rounded-lg border">
+                           <button type="button" class="accordion-header w-full text-left p-4 font-semibold">Riparian Mammals</button>
+                           <div class="accordion-content px-4 pb-4">
+                                <label class="block text-sm font-medium">Waterbody Suitability</label>
+                                <textarea class="w-full mt-1 p-2 border rounded-lg" data-species-field="riparian_suitability"></textarea>
+                                <label class="block text-sm font-medium mt-2">Field Signs (spraints, latrines, burrows etc.)</label>
+                                <textarea class="w-full mt-1 p-2 border rounded-lg" data-species-field="riparian_signs"></textarea>
+                           </div>
+                        </div>
+                         <!-- Other -->
+                        <div class="accordion-item bg-gray-50 rounded-lg border">
+                           <button type="button" class="accordion-header w-full text-left p-4 font-semibold">Other Protected Species</button>
+                           <div class="accordion-content px-4 pb-4">
+                                <label class="block text-sm font-medium">Notes on other species</label>
+                                <textarea class="w-full mt-1 p-2 border rounded-lg" data-species-field="other_species_notes"></textarea>
+                           </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="step-6" class="step-content hidden">
+                    <h2 class="text-2xl font-semibold text-gray-700 mb-6">6. Summary and Report</h2>
                     <div class="bg-gray-50 p-6 rounded-lg border">
                         <h3 class="font-bold text-xl mb-4">Appraisal Summary</h3>
                         <div id="summary-content" class="space-y-4"></div>
@@ -267,6 +395,18 @@
                 option.value = plant.common;
                 plantDatalist.appendChild(option);
             });
+            const bngHabitats = {
+                "Cropland": ["Arable field margins cultivated annually", "Arable field margins game bird mix", "Arable field margins pollen & nectar", "Arable field margins tussocky", "Cereal crops", "Winter stubble", "Horticulture", "Intensive orchards", "Non-cereal crops", "Temporary grass and clover leys"],
+                "Grassland": ["Traditional orchards", "Bracken", "Floodplain Wetland Mosaic", "Lowland calcareous grassland", "Lowland dry acid grassland", "Lowland meadows", "Modified grassland", "Other lowland acid grassland", "Other neutral grassland", "Tall herb communities", "Upland acid grassland", "Upland calcareous grassland", "Upland hay meadows"],
+                "Heathland and shrub": ["Blackthorn scrub", "Bramble scrub", "Gorse scrub", "Hawthorn scrub", "Hazel scrub", "Lowland Heathland", "Mixed scrub", "Mountain heaths and willow scrub", "Rhododendron scrub", "Dunes with Sea buckthorn", "Other Sea buckthorn scrub", "Upland Heathland", "Willow Scrub"],
+                "Lakes": ["Aquifer fed naturally fluctuating water bodies", "Ornamental lake or pond", "High alkalinity lakes", "Low alkalinity lakes", "Marl Lakes", "Moderate alkalinity lakes", "Peat Lakes", "Ponds (Priority Habitat)", "Ponds (Non- Priority Habitat)", "Reservoirs", "Temporary lakes, ponds and pools"],
+                "Sparsely vegetated land": ["Calaminarian grasslands", "Coastal sand dunes", "Coastal vegetated shingle", "Ruderal/Ephemeral", "Inland rock outcrop and scree habitats", "Limestone pavement", "Maritime cliff and slopes", "Other inland rock and scree", "Tall Forbs"],
+                "Urban": ["Allotments", "Artificial unvegetated, unsealed surface", "Bioswale", "Built linear features", "Cemeteries and churchyards", "Developed land; sealed surface", "Facade-bound green wall", "Ground based green wall", "Ground level planters", "Intensive green roof", "Introduced shrub", "Open Mosaic Habitats on Previously Developed Land", "Rain garden", "Actively worked sand pit quarry or open cast mine", "Sustainable drainage system", "Un-vegetated garden", "Vacant/derelict land", "Bareground", "Vegetated garden", "Biodiverse green roof", "Other green roof"],
+                "Wetland": ["Blanket bog", "Depressions on Peat substrates", "Fens (upland and lowland)", "Lowland raised bog", "Oceanic Valley Mire", "Purple moor grass and rush pastures", "Reedbeds", "Transition mires and quaking bogs"],
+                "Woodland and forest": ["Felled", "Lowland beech and yew woodland", "Lowland mixed deciduous woodland", "Native pine woodlands", "Other coniferous woodland", "Other Scot's Pine woodland", "Other woodland; broadleaved", "Other woodland; mixed", "Upland birchwoods", "Upland mixed ashwoods", "Upland oakwood", "Wet woodland", "Wood-pasture and parkland"],
+                "Individual Trees": ["Rural Trees", "Urban Trees"],
+                "Coastal habitats": ["Coastal lagoons", "High energy littoral rock", "Moderate energy littoral rock", "Low energy littoral rock", "Features of littoral rock", "Watercourse footprint", "Coastal saltmarsh", "Artificial saltmarshes", "Littoral coarse sediment", "Littoral mud", "Littoral mixed sediments", "Littoral seagrass", "Littoral biogenic reefs"]
+            };
 
             const updateStepper = () => {
                 document.querySelectorAll('#stepper .step').forEach((stepEl) => {
@@ -288,9 +428,9 @@
                 document.querySelectorAll('.step-content').forEach(el => el.classList.add('hidden'));
                 document.getElementById(`step-${step}`).classList.remove('hidden');
                 document.getElementById('prev-btn').classList.toggle('hidden', step === 1);
-                document.getElementById('next-btn').classList.toggle('hidden', step === 4);
-                document.getElementById('generate-report-btn').classList.toggle('hidden', step !== 4);
-                if (step === 4) populateSummary();
+                document.getElementById('next-btn').classList.toggle('hidden', step === 6);
+                document.getElementById('generate-report-btn').classList.toggle('hidden', step !== 6);
+                if (step === 6) populateSummary();
                 updateStepper();
             };
 
@@ -301,27 +441,97 @@
             const createHabitatHTML = (data = {}) => {
                 const count = document.querySelectorAll('.habitat-entry').length + 1;
                 const parcelsHTML = (data.parcels || []).map(p => createParcelHTML(p)).join('');
-                return `<div class="habitat-entry bg-gray-50 p-4 rounded-lg border"><h3 class="font-semibold text-lg mb-2">Habitat ${count}</h3><div><label class="block text-sm font-medium text-gray-700 mb-1">Habitat Type</label><input type="text" class="habitat-type w-full px-4 py-2 border border-gray-300 rounded-lg" placeholder="e.g., Broadleaved woodland" value="${data.type || ''}"></div><div class="parcels-container mt-4 space-y-4 border-t pt-4">${parcelsHTML}</div><button type="button" class="add-parcel-btn mt-4 inline-flex items-center px-3 py-1.5 border border-dashed text-sm font-medium rounded-md text-blue-700 bg-blue-100 hover:bg-blue-200">Add Parcel</button></div>`;
+                let optionsHTML = '<option value="">Select habitat...</option>';
+                for (const group in bngHabitats) {
+                    optionsHTML += `<optgroup label="${group}">`;
+                    bngHabitats[group].forEach(hab => {
+                         optionsHTML += `<option value="${hab}" ${data.type === hab ? 'selected' : ''}>${hab}</option>`;
+                    });
+                    optionsHTML += `</optgroup>`;
+                }
+                return `<div class="habitat-entry bg-gray-50 p-4 rounded-lg border"><h3 class="font-semibold text-lg mb-2">Habitat ${count}</h3><div><label class="block text-sm font-medium text-gray-700 mb-1">Habitat Type</label><select class="habitat-type w-full px-4 py-2 border border-gray-300 rounded-lg bg-white">${optionsHTML}</select></div><div class="parcels-container mt-4 space-y-4 border-t pt-4">${parcelsHTML}</div><button type="button" class="add-parcel-btn mt-4 inline-flex items-center px-3 py-1.5 border border-dashed text-sm font-medium rounded-md text-blue-700 bg-blue-100 hover:bg-blue-200">Add Parcel</button></div>`;
             };
             const createParcelHTML = (data = {}) => {
                 const plantsHTML = (data.plants || []).map(p => createPlantHTML(p)).join('');
                 return `<div class="parcel-entry bg-white p-4 rounded-lg border border-gray-200"><div class="flex justify-between items-center"><h4 class="font-semibold text-md">Parcel</h4><button type="button" class="remove-btn text-red-500 hover:text-red-700 font-bold text-xs">Remove</button></div><div><label class="block text-sm font-medium text-gray-700 mt-2 mb-1">Parcel Number / Ref</label><input type="text" class="parcel-ref w-full px-3 py-1.5 border border-gray-300 rounded-lg text-sm" placeholder="e.g., P123" value="${data.ref || ''}"></div><div class="mt-2 relative"><label class="block text-sm font-medium text-gray-700 mb-1">Description</label><textarea class="parcel-description w-full px-3 py-1.5 border border-gray-300 rounded-lg text-sm" rows="3">${data.description || ''}</textarea><button type="button" class="generate-desc-btn absolute bottom-2 right-2 text-xs text-white bg-gradient-to-r from-purple-500 to-pink-500 hover:bg-gradient-to-l rounded-full px-2 py-1">✨ AI</button></div><div class="mt-4 border-t pt-3"><label class="block text-sm font-medium text-gray-700 mb-1">Search and Add Plant</label><input type="text" list="plant-datalist" class="plant-search w-full px-3 py-1.5 border border-gray-300 rounded-lg text-sm" placeholder="Start typing..."><div class="plant-list-container mt-2 space-y-2">${plantsHTML}</div></div></div>`;
             };
             const createPlantHTML = (plant) => `<div class="plant-list-item bg-gray-100 p-2 rounded-md flex justify-between items-center" data-common-name="${plant.common}" data-latin-name="${plant.latin}"><p class="text-sm"><strong>${plant.common}</strong> <em>(${plant.latin})</em></p><button type="button" class="remove-btn text-red-500 hover:text-red-700 font-bold text-xs">✕</button></div>`;
-            const createSpeciesHTML = (data = {}) => {
-                const count = document.querySelectorAll('.species-entry').length + 1;
-                return `<div class="species-entry bg-gray-50 p-4 rounded-lg border"><h3 class="font-semibold text-lg mb-2">Species ${count}</h3><div class="grid grid-cols-1 md:grid-cols-2 gap-6"><div><label class="block text-sm font-medium text-gray-700 mb-1">Species Name</label><input type="text" class="species-name w-full px-4 py-2 border border-gray-300 rounded-lg" value="${data.name || ''}" placeholder="e.g., Pipistrelle Bat"></div><div><label class="block text-sm font-medium text-gray-700 mb-1">Evidence</label><input type="text" class="species-evidence w-full px-4 py-2 border border-gray-300 rounded-lg" value="${data.evidence || ''}" placeholder="e.g., Droppings, Sighting"></div></div><div class="mt-4"><label class="block text-sm font-medium text-gray-700 mb-1">Description of Evidence</label><textarea class="species-description w-full px-4 py-2 border border-gray-300 rounded-lg" rows="3">${data.description || ''}</textarea></div><div class="mt-4"><label class="block text-sm font-medium text-gray-700 mb-1">Photo</label><input type="file" accept="image/*" class="species-photo w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"></div></div>`;
+            const createBuildingHTML = (data = {}) => {
+                const count = document.querySelectorAll('.building-entry').length + 1;
+                const suitabilityOptions = ['None', 'Negligible', 'Low', 'Moderate', 'High'];
+                const proposalOptions = ['Retain', 'Convert', 'Demolish'];
+                const surveyOptions = ['Yes', 'No'];
+
+                return `
+                <div class="building-entry bg-gray-50 p-4 rounded-lg border">
+                    <div class="flex justify-between items-center">
+                         <h3 class="font-semibold text-lg mb-2">Building ${count}</h3>
+                         <button type="button" class="remove-btn text-red-500 hover:text-red-700 font-bold text-xs">Remove</button>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div><label class="block text-sm font-medium">Building Number</label><input type="text" class="building-number w-full mt-1 p-2 border rounded-lg" value="${data.number || ''}"></div>
+                        <div><label class="block text-sm font-medium">Proposal</label><select class="building-proposal w-full mt-1 p-2 border rounded-lg bg-white"><option value="">Select proposal...</option>${proposalOptions.map(o => `<option value="${o}" ${data.proposal === o ? 'selected' : ''}>${o}</option>`).join('')}</select></div>
+                        <div class="md:col-span-2"><label class="block text-sm font-medium">General Description</label><textarea class="building-description w-full mt-1 p-2 border rounded-lg" rows="3">${data.description || ''}</textarea></div>
+                        <div class="md:col-span-2"><label class="block text-sm font-medium">Bat Roost Features</label><textarea class="building-features w-full mt-1 p-2 border rounded-lg" rows="3">${data.features || ''}</textarea></div>
+                        <div><label class="block text-sm font-medium">Bat Roost Suitability</label><select class="building-suitability w-full mt-1 p-2 border rounded-lg bg-white"><option value="">Select suitability...</option>${suitabilityOptions.map(o => `<option value="${o}" ${data.suitability === o ? 'selected' : ''}>${o}</option>`).join('')}</select></div>
+                        <div><label class="block text-sm font-medium">Surveys Required?</label><select class="building-surveys-required w-full mt-1 p-2 border rounded-lg bg-white"><option value="">Select option...</option>${surveyOptions.map(o => `<option value="${o}" ${data.surveysRequired === o ? 'selected' : ''}>${o}</option>`).join('')}</select></div>
+                        <div><label class="block text-sm font-medium">No. IR Cameras</label><input type="number" class="building-ir-cameras w-full mt-1 p-2 border rounded-lg" value="${data.irCameras || ''}"></div>
+                        <div><label class="block text-sm font-medium">No. Floaters</label><input type="number" class="building-floaters w-full mt-1 p-2 border rounded-lg" value="${data.floaters || ''}"></div>
+                        <div><label class="block text-sm font-medium">No. Human Surveyors</label><input type="number" class="building-human-surveyors w-full mt-1 p-2 border rounded-lg" value="${data.humanSurveyors || ''}"></div>
+                        <div class="md:col-span-2"><label class="block text-sm font-medium">Justification for Human Surveyors</label><textarea class="building-justification w-full mt-1 p-2 border rounded-lg" rows="2">${data.justification || ''}</textarea></div>
+                        <div><label class="block text-sm font-medium">Photo</label><input type="file" accept="image/*" class="building-photo w-full text-sm"></div>
+                        <div class="md:col-span-2"><label class="block text-sm font-medium">Potential Survey Limitations</label><textarea class="building-limitations w-full mt-1 p-2 border rounded-lg" rows="2">${data.limitations || ''}</textarea></div>
+                    </div>
+                </div>`;
             };
-            
+            const createTreeHTML = (data = {}) => {
+                const count = document.querySelectorAll('.tree-entry').length + 1;
+                const suitabilityOptions = ['None', 'FAR', 'PRF-I', 'PRF-M'];
+                const proposalOptions = ['Retain', 'Cut back / Prune', 'Remove'];
+                const surveyOptions = ['No', 'Yes - Endoscope from ladder', 'Yes - Endoscope climbing', 'Yes - IR camera survey'];
+                const treeSpeciesOptions = plantDatabase.filter(p => ["Alder", "Ash", "Aspen", "Beech", "Silver Birch", "Downy Birch", "Blackthorn", "Box", "Bird Cherry", "Wild Cherry", "Crab Apple", "Dogwood", "Elder", "Hawthorn", "Hazel", "Holly", "Hornbeam", "Field Maple", "Pedunculate Oak", "Sessile Oak", "Rowan", "Goat Willow", "White Willow", "Yew"].includes(p.common));
+                const featureOptions = ['Woodpecker hole', 'Rot hole / Cavity', 'Crack / Split (e.g., frost crack, helical split)', 'Hazard beam', 'Tear-out / Limb-snap', 'Loose / Flaking bark', 'Dense ivy cover', 'Other'];
+
+                return `
+                <div class="tree-entry bg-gray-50 p-4 rounded-lg border">
+                    <div class="flex justify-between items-center">
+                         <h3 class="font-semibold text-lg mb-2">Tree ${count}</h3>
+                         <button type="button" class="remove-btn text-red-500 hover:text-red-700 font-bold text-xs">Remove</button>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div><label class="block text-sm font-medium">Tree Number/Ref</label><input type="text" class="tree-number w-full mt-1 p-2 border rounded-lg" value="${data.number || ''}"></div>
+                        <div><label class="block text-sm font-medium">Species</label><select class="tree-species w-full mt-1 p-2 border rounded-lg bg-white"><option value="">Select species...</option>${treeSpeciesOptions.map(o => `<option value="${o.common}" ${data.species === o.common ? 'selected' : ''}>${o.common}</option>`).join('')}</select></div>
+                        <div class="md:col-span-2"><label class="block text-sm font-medium">Description/Condition</label><textarea class="tree-description w-full mt-1 p-2 border rounded-lg" rows="3">${data.description || ''}</textarea></div>
+                        <div class="md:col-span-2">
+                           <label class="block text-sm font-medium">Bat Roost Features</label>
+                           <select class="tree-features-select w-full mt-1 p-2 border rounded-lg bg-white">
+                                <option value="">Select a feature...</option>
+                                ${featureOptions.map(o => `<option value="${o}" ${data.features === o ? 'selected' : ''}>${o}</option>`).join('')}
+                           </select>
+                           <textarea class="tree-features-other hidden w-full mt-2 p-2 border rounded-lg" rows="2" placeholder="Describe other features...">${data.features && !featureOptions.includes(data.features) ? data.features : ''}</textarea>
+                        </div>
+                        <div><label class="block text-sm font-medium">Bat Roost Suitability</label><select class="tree-suitability w-full mt-1 p-2 border rounded-lg bg-white"><option value="">Select suitability...</option>${suitabilityOptions.map(o => `<option value="${o}" ${data.suitability === o ? 'selected' : ''}>${o}</option>`).join('')}</select></div>
+                        <div><label class="block text-sm font-medium">Surveys Required?</label><select class="tree-surveys-required w-full mt-1 p-2 border rounded-lg bg-white"><option value="">Select option...</option>${surveyOptions.map(o => `<option value="${o}" ${data.surveysRequired === o ? 'selected' : ''}>${o}</option>`).join('')}</select></div>
+                         <div><label class="block text-sm font-medium">Proposal</label><select class="tree-proposal w-full mt-1 p-2 border rounded-lg bg-white"><option value="">Select proposal...</option>${proposalOptions.map(o => `<option value="${o}" ${data.proposal === o ? 'selected' : ''}>${o}</option>`).join('')}</select></div>
+                         <div><label class="block text-sm font-medium">No. IR Cameras</label><input type="number" class="tree-ir-cameras w-full mt-1 p-2 border rounded-lg" value="${data.irCameras || ''}"></div>
+                        <div><label class="block text-sm font-medium">Photo</label><input type="file" accept="image/*" class="tree-photo w-full text-sm"></div>
+                    </div>
+                </div>`;
+            };
+
             peaForm.addEventListener('click', e => {
                 if (e.target.matches('.remove-btn')) {
-                    e.target.closest('.surveyor-item, .parcel-entry, .species-entry, .plant-list-item')?.remove();
+                    e.target.closest('.surveyor-item, .parcel-entry, .plant-list-item, .building-entry, .tree-entry')?.remove();
                 }
                 if (e.target.matches('.add-parcel-btn')) {
                     e.target.previousElementSibling.insertAdjacentHTML('beforeend', createParcelHTML());
                 }
                 if (e.target.matches('.generate-desc-btn')) {
                     generateHabitatDescription(e.target);
+                }
+                if (e.target.matches('.accordion-header')) {
+                    const content = e.target.nextElementSibling;
+                    content.style.maxHeight = content.style.maxHeight ? null : content.scrollHeight + "px";
                 }
             });
 
@@ -336,66 +546,132 @@
                         e.target.value = '';
                     }
                 }
+                if(e.target.matches('.tree-features-select')){
+                    const otherTextarea = e.target.nextElementSibling;
+                    otherTextarea.classList.toggle('hidden', e.target.value !== 'Other');
+                }
             });
 
-            const getProjectDataFromForm = () => {
+            const getProjectDataFromForm = () => { /* see implementation below */ };
+            const populateFormWithData = (data) => { /* see implementation below */ };
+            const generateReport = () => { /* see implementation below */ };
+            const populateSummary = () => { /* see implementation below */ };
+            
+            window.getProjectDataFromForm = () => {
                 const form = document.getElementById('pea-form');
-                const surveyorNames = Array.from(form.querySelectorAll('.surveyor-name')).map(input => input.value).filter(name => name);
-                const habitats = Array.from(form.querySelectorAll('.habitat-entry')).map(h => ({
-                    type: h.querySelector('.habitat-type').value,
-                    parcels: Array.from(h.querySelectorAll('.parcel-entry')).map(p => ({
-                        ref: p.querySelector('.parcel-ref').value,
-                        description: p.querySelector('.parcel-description').value,
-                        plants: Array.from(p.querySelectorAll('.plant-list-item')).map(plant => ({
-                            common: plant.dataset.commonName,
-                            latin: plant.dataset.latinName
-                        }))
-                    }))
-                }));
-                const species = Array.from(form.querySelectorAll('.species-entry')).map(s => ({
-                    name: s.querySelector('.species-name').value,
-                    evidence: s.querySelector('.species-evidence').value,
-                    description: s.querySelector('.species-description').value
-                }));
+                const protectedSpeciesData = {};
+                form.querySelectorAll('[data-species-field]').forEach(field => {
+                    const key = field.dataset.speciesField;
+                    protectedSpeciesData[key] = field.type === 'checkbox' ? field.checked : field.value;
+                });
+
                 return {
                     projectName: form.projectName.value, projectNumber: form.projectNumber.value, siteAddress: form.siteAddress.value,
-                    surveyors: surveyorNames, gridReference: form.gridReference.value, date: form.date.value,
-                    startTime: form.startTime.value, endTime: form.endTime.value, temperature: form.temperature.value,
-                    cloudCover: form.cloudCover.value, wind: form.wind.value, rain: form.rain.value,
-                    groundConditions: form.groundConditions.value, surveyLimitations: form.surveyLimitations.value, habitats, species
+                    surveyors: Array.from(form.querySelectorAll('.surveyor-name')).map(i=>i.value).filter(Boolean),
+                    gridReference: form.gridReference.value, date: form.date.value, startTime: form.startTime.value, endTime: form.endTime.value,
+                    temperature: form.temperature.value, cloudCover: form.cloudCover.value, wind: form.wind.value, rain: form.rain.value,
+                    groundConditions: form.groundConditions.value, surveyLimitations: form.surveyLimitations.value,
+                    habitats: Array.from(form.querySelectorAll('.habitat-entry')).map(h => ({
+                        type: h.querySelector('.habitat-type').value,
+                        parcels: Array.from(h.querySelectorAll('.parcel-entry')).map(p => ({
+                            ref: p.querySelector('.parcel-ref').value,
+                            description: p.querySelector('.parcel-description').value,
+                            plants: Array.from(p.querySelectorAll('.plant-list-item')).map(pl => ({ common: pl.dataset.commonName, latin: pl.dataset.latinName }))
+                        }))
+                    })),
+                    buildings: Array.from(form.querySelectorAll('.building-entry')).map(b => ({
+                        number: b.querySelector('.building-number').value,
+                        proposal: b.querySelector('.building-proposal').value,
+                        description: b.querySelector('.building-description').value,
+                        features: b.querySelector('.building-features').value,
+                        suitability: b.querySelector('.building-suitability').value,
+                        surveysRequired: b.querySelector('.building-surveys-required').value,
+                        irCameras: b.querySelector('.building-ir-cameras').value,
+                        floaters: b.querySelector('.building-floaters').value,
+                        humanSurveyors: b.querySelector('.building-human-surveyors').value,
+                        justification: b.querySelector('.building-justification').value,
+                        limitations: b.querySelector('.building-limitations').value
+                    })),
+                    trees: Array.from(form.querySelectorAll('.tree-entry')).map(t => {
+                        const featuresSelect = t.querySelector('.tree-features-select');
+                        const features = featuresSelect.value === 'Other' ? t.querySelector('.tree-features-other').value : featuresSelect.value;
+                        return {
+                            number: t.querySelector('.tree-number').value,
+                            species: t.querySelector('.tree-species').value,
+                            description: t.querySelector('.tree-description').value,
+                            features: features,
+                            suitability: t.querySelector('.tree-suitability').value,
+                            surveysRequired: t.querySelector('.tree-surveys-required').value,
+                            proposal: t.querySelector('.tree-proposal').value,
+                            irCameras: t.querySelector('.tree-ir-cameras').value
+                        };
+                    }),
+                    protectedSpecies: protectedSpeciesData
                 };
             };
             
-            const populateFormWithData = (data) => {
+            window.populateFormWithData = (data) => {
                 const form = document.getElementById('pea-form');
                 form.reset();
-                const surveyorsContainer = document.getElementById('surveyors-container');
-                const habitatsContainer = document.getElementById('habitats-container');
-                const speciesContainer = document.getElementById('species-container');
-                [surveyorsContainer, habitatsContainer, speciesContainer].forEach(c => c.innerHTML = '');
+                const containers = {
+                    surveyors: document.getElementById('surveyors-container'),
+                    habitats: document.getElementById('habitats-container'),
+                    buildings: document.getElementById('buildings-container'),
+                    trees: document.getElementById('trees-container')
+                };
+                Object.values(containers).forEach(c => c.innerHTML = '');
 
                 form.projectName.value = data.projectName || '';
                 form.projectNumber.value = data.projectNumber || '';
                 form.siteAddress.value = data.siteAddress || '';
-                if (data.surveyors && data.surveyors.length > 0) {
-                    data.surveyors.forEach((name, i) => surveyorsContainer.insertAdjacentHTML('beforeend', createSurveyorHTML(name, i > 0)));
-                } else { surveyorsContainer.innerHTML = createSurveyorHTML(); }
+                if (data.surveyors?.length) data.surveyors.forEach((name, i) => containers.surveyors.insertAdjacentHTML('beforeend', createSurveyorHTML(name, i > 0)));
+                else containers.surveyors.innerHTML = createSurveyorHTML();
                 document.getElementById('add-surveyor-btn').classList.toggle('hidden', (data.surveyors?.length || 0) >= 4);
 
                 Object.keys(data).forEach(key => {
-                    if(form[key] && typeof form[key] !== 'function') form[key].value = data[key] || '';
+                    if(form[key] && typeof form[key] !== 'function' && typeof form[key].value !== 'undefined') {
+                       form[key].value = data[key] || '';
+                    }
                 });
 
-                if(data.habitats?.length) data.habitats.forEach(h => habitatsContainer.insertAdjacentHTML('beforeend', createHabitatHTML(h)));
-                else habitatsContainer.innerHTML = createHabitatHTML();
+                if(data.habitats?.length) data.habitats.forEach(h => containers.habitats.insertAdjacentHTML('beforeend', createHabitatHTML(h)));
+                else containers.habitats.innerHTML = createHabitatHTML();
                 
-                if(data.species?.length) data.species.forEach(s => speciesContainer.insertAdjacentHTML('beforeend', createSpeciesHTML(s)));
-                else speciesContainer.innerHTML = createSpeciesHTML();
+                if(data.buildings?.length) data.buildings.forEach(b => containers.buildings.insertAdjacentHTML('beforeend', createBuildingHTML(b)));
+                else containers.buildings.innerHTML = createBuildingHTML();
+
+                if(data.trees?.length) data.trees.forEach(t => containers.trees.insertAdjacentHTML('beforeend', createTreeHTML(t)));
+                else containers.trees.innerHTML = createTreeHTML();
+
+                // Handle "Other" for tree features on load
+                document.querySelectorAll('.tree-entry').forEach((treeEntry, index) => {
+                    const featureData = data.trees[index]?.features || '';
+                    const select = treeEntry.querySelector('.tree-features-select');
+                    const otherText = treeEntry.querySelector('.tree-features-other');
+                    const standardOptions = Array.from(select.options).map(opt => opt.value);
+                    if(featureData && !standardOptions.includes(featureData)){
+                        select.value = 'Other';
+                        otherText.value = featureData;
+                        otherText.classList.remove('hidden');
+                    } else {
+                        select.value = featureData;
+                    }
+                });
+
+                if(data.protectedSpecies){
+                    Object.keys(data.protectedSpecies).forEach(key => {
+                        const field = form.querySelector(`[data-species-field="${key}"]`);
+                        if(field){
+                            if(field.type === 'checkbox') field.checked = data.protectedSpecies[key];
+                            else field.value = data.protectedSpecies[key] || '';
+                        }
+                    });
+                }
             };
 
-            const populateSummary = () => {
+            window.populateSummary = () => {
                 const data = getProjectDataFromForm();
-                let summaryHTML = `<p><strong>Project:</strong> ${data.projectName||'N/A'} (${data.projectNumber||'N/A'})</p><p><strong>Site:</strong> ${data.siteAddress||'N/A'}</p><p><strong>Date:</strong> ${data.date||'N/A'}</p><hr class="my-4">`;
+                let summaryHTML = `<p><strong>Project:</strong> ${data.projectName||'-'} (${data.projectNumber||'-'})</p><p><strong>Site:</strong> ${data.siteAddress||'-'}</p><p><strong>Date:</strong> ${data.date||'-'}</p><hr class="my-4">`;
                 data.habitats.forEach(h => {
                     if (h.type) {
                         summaryHTML += `<div><h4 class="font-semibold text-lg">${h.type}</h4>`;
@@ -403,47 +679,136 @@
                         summaryHTML += `</div>`;
                     }
                 });
-                if (data.species.some(s => s.name)) {
-                    summaryHTML += `<hr class="my-4"><h4 class="font-semibold text-lg">Notable Species:</h4><ul>${data.species.filter(s => s.name).map(s => `<li>${s.name}</li>`).join('')}</ul>`;
+                if (data.buildings.some(b => b.number)) {
+                    summaryHTML += `<hr class="my-4"><h4 class="font-semibold text-lg">Buildings:</h4><ul>${data.buildings.filter(b => b.number).map(b => `<li>Building ${b.number} (${b.suitability} suitability)</li>`).join('')}</ul>`;
+                }
+                if (data.trees.some(t => t.number)) {
+                    summaryHTML += `<hr class="my-4"><h4 class="font-semibold text-lg">Trees:</h4><ul>${data.trees.filter(t => t.number).map(t => `<li>Tree ${t.number} (${t.species})</li>`).join('')}</ul>`;
                 }
                 document.getElementById('summary-content').innerHTML = summaryHTML;
             };
 
-            const generateReport = () => {
+            window.generateReport = () => {
                 const reportData = getProjectDataFromForm();
                 const reportContent = document.getElementById('report-content');
-                let reportHTML = `<div class="text-center mb-8"><h2 class="text-3xl font-bold">${reportData.projectName||"Untitled Project"}</h2><p class="text-lg">${reportData.siteAddress||"No address"}</p><p><strong>Project No:</strong> ${reportData.projectNumber||"N/A"} | <strong>Grid Ref:</strong> ${reportData.gridReference||"N/A"}</p></div><div class="mb-6 p-4 bg-gray-50 rounded-lg"><h3 class="text-xl font-bold mb-4 border-b pb-2">Survey Details</h3><div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 text-sm"><div><p><strong>Date:</strong> ${reportData.date||'N/A'}</p><p><strong>Ecologist(s):</strong> ${reportData.surveyors.join(', ')||'N/A'}</p><p><strong>Start Time:</strong> ${reportData.startTime||'N/A'}</p><p><strong>End Time:</strong> ${reportData.endTime||'N/A'}</p></div><div><p><strong>Temperature:</strong> ${reportData.temperature?reportData.temperature+'°C':'N/A'}</p><p><strong>Cloud cover:</strong> ${reportData.cloudCover||'N/A'}</p><p><strong>Wind:</strong> ${reportData.wind||'N/A'}</p><p><strong>Rain:</strong> ${reportData.rain||'N/A'}</p></div><div class="md:col-span-2 mt-2"><p><strong>Ground Conditions:</strong> ${reportData.groundConditions||'N/A'}</p></div><div class="md:col-span-2 mt-2"><p><strong>Survey Limitations:</strong> ${reportData.surveyLimitations||'None'}</p></div></div></div>`;
+                const valOrDash = (val) => val || '-';
+                let reportHTML = `<div class="text-center mb-8"><h2 class="text-3xl font-bold">${valOrDash(reportData.projectName)}</h2><p class="text-lg">${valOrDash(reportData.siteAddress)}</p><p><strong>Project No:</strong> ${valOrDash(reportData.projectNumber)} | <strong>Grid Ref:</strong> ${valOrDash(reportData.gridReference)}</p></div><div class="mb-6 p-4 bg-gray-50 rounded-lg"><h3 class="text-xl font-bold mb-4 border-b pb-2">Survey Details</h3><div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 text-sm"><div><p><strong>Date:</strong> ${valOrDash(reportData.date)}</p><p><strong>Ecologist(s):</strong> ${reportData.surveyors.join(', ')||'-'}</p><p><strong>Start Time:</strong> ${valOrDash(reportData.startTime)}</p><p><strong>End Time:</strong> ${valOrDash(reportData.endTime)}</p></div><div><p><strong>Temperature:</strong> ${reportData.temperature?reportData.temperature+'°C':'-'}</p><p><strong>Cloud cover:</strong> ${valOrDash(reportData.cloudCover)}</p><p><strong>Wind:</strong> ${valOrDash(reportData.wind)}</p><p><strong>Rain:</strong> ${valOrDash(reportData.rain)}</p></div><div class="md:col-span-2 mt-2"><p><strong>Ground Conditions:</strong> ${valOrDash(reportData.groundConditions)}</p></div><div class="md:col-span-2 mt-2"><p><strong>Survey Limitations:</strong> ${valOrDash(reportData.surveyLimitations)}</p></div></div></div>`;
                 reportHTML += `<h3 class="text-2xl font-bold mt-8 mb-4 border-b pb-2">1. Habitats and Plant Species</h3>`;
                 reportData.habitats.forEach(h => {
                     if (h.type) {
                         reportHTML += `<div class="mb-6 break-inside-avoid"><h4 class="text-xl font-bold">${h.type}</h4>`;
                         h.parcels.forEach(p => {
-                            reportHTML += `<div class="ml-4 mt-2 p-3 bg-gray-50 rounded-lg"><h5 class="font-semibold">Parcel: ${p.ref||"Unnamed Parcel"}</h5><p class="text-sm">${p.description}</p>`;
+                            reportHTML += `<div class="ml-4 mt-2 p-3 bg-gray-50 rounded-lg"><h5 class="font-semibold">Parcel: ${valOrDash(p.ref)}</h5><p class="text-sm">${valOrDash(p.description)}</p>`;
                             if (p.plants.length > 0) reportHTML += `<h6 class="font-semibold mt-2">Plant Species Recorded:</h6><ul class="list-disc list-inside text-sm">${p.plants.map(pl=>`<li><strong>${pl.common}</strong> <em>(${pl.latin})</em></li>`).join('')}</ul>`;
                             reportHTML += `</div>`;
                         });
                         reportHTML += `</div>`;
                     }
                 });
-                reportHTML += `<h3 class="text-2xl font-bold mt-8 mb-4 border-b pb-2">2. Notable Species</h3>`;
-                const speciesPhotoInputs = document.querySelectorAll('.species-entry .species-photo');
-                reportData.species.forEach((s, i) => {
-                    if (s.name) {
-                        reportHTML += `<div class="mb-4 break-inside-avoid"><h4 class="text-xl font-bold">${s.name}</h4><p><strong>Evidence:</strong> ${s.evidence}</p><p>${s.description}</p>`;
-                        if (speciesPhotoInputs[i]?.files[0]) reportHTML += `<img src="${URL.createObjectURL(speciesPhotoInputs[i].files[0])}" class="mt-2 rounded-lg max-w-sm mx-auto">`;
-                        reportHTML += `</div>`;
-                    }
-                });
+                
+                let sectionCounter = 2;
+                if(reportData.buildings.some(b => b.number)) {
+                    reportHTML += `<h3 class="text-2xl font-bold mt-8 mb-4 border-b pb-2">${sectionCounter}. Buildings</h3>`;
+                    sectionCounter++;
+                    const buildingPhotoInputs = document.querySelectorAll('.building-entry .building-photo');
+                    reportData.buildings.forEach((b, i) => {
+                        if (b.number) {
+                            reportHTML += `<div class="mb-4 break-inside-avoid"><h4 class="text-xl font-bold">Building ${b.number}</h4><p><strong>Proposal:</strong> ${valOrDash(b.proposal)}</p><p><strong>Description:</strong> ${valOrDash(b.description)}</p><p><strong>Bat Roost Features:</strong> ${valOrDash(b.features)}</p><p><strong>Bat Roost Suitability:</strong> ${valOrDash(b.suitability)}</p><p><strong>Further Surveys Required:</strong> ${valOrDash(b.surveysRequired)}</p><p><strong>Survey Effort:</strong> ${b.irCameras||'0'} IR cameras, ${b.floaters||'0'} floaters, ${b.humanSurveyors||'0'} surveyors</p><p><strong>Surveyor Justification:</strong> ${valOrDash(b.justification)}</p><p><strong>Potential Survey Limitations:</strong> ${valOrDash(b.limitations)}</p>`;
+                            if (buildingPhotoInputs[i]?.files[0]) reportHTML += `<img src="${URL.createObjectURL(buildingPhotoInputs[i].files[0])}" class="mt-2 rounded-lg max-w-sm mx-auto">`;
+                            reportHTML += `</div>`;
+                        }
+                    });
+                }
+                
+                if(reportData.trees.some(t => t.number)) {
+                    reportHTML += `<h3 class="text-2xl font-bold mt-8 mb-4 border-b pb-2">${sectionCounter}. Trees</h3>`;
+                    sectionCounter++;
+                    const treePhotoInputs = document.querySelectorAll('.tree-entry .tree-photo');
+                    reportData.trees.forEach((t, i) => {
+                        if (t.number) {
+                            reportHTML += `<div class="mb-4 break-inside-avoid"><h4 class="text-xl font-bold">Tree ${t.number} (${valOrDash(t.species)})</h4><p><strong>Proposal:</strong> ${valOrDash(t.proposal)}</p><p><strong>Description/Condition:</strong> ${valOrDash(t.description)}</p><p><strong>Bat Roost Features:</strong> ${valOrDash(t.features)}</p><p><strong>Bat Roost Suitability:</strong> ${valOrDash(t.suitability)}</p><p><strong>Further Surveys Required:</strong> ${valOrDash(t.surveysRequired)}</p><p><strong>IR Cameras:</strong> ${t.irCameras||'0'}</p>`;
+                            if (treePhotoInputs[i]?.files[0]) reportHTML += `<img src="${URL.createObjectURL(treePhotoInputs[i].files[0])}" class="mt-2 rounded-lg max-w-sm mx-auto">`;
+                            reportHTML += `</div>`;
+                        }
+                    });
+                }
+                
+                reportHTML += `<h3 class="text-2xl font-bold mt-8 mb-4 border-b pb-2">${sectionCounter}. Protected Species Potential</h3>`;
+                sectionCounter++;
+                const ps = reportData.protectedSpecies;
+                reportHTML += `<div class="prose prose-sm max-w-none">
+                    <h4>Foraging & Commuting Bats</h4>
+                    <p><strong>Habitat Suitability:</strong> ${valOrDash(ps.bats_habitat_desc)}</p>
+                    <p><strong>Further Surveys Required:</strong> ${valOrDash(ps.bats_survey_req)}</p>
+                    <p><strong>Suitability for Survey:</strong> ${valOrDash(ps.bats_survey_suitability)}</p>
+                    <p><strong>Transects:</strong> ${valOrDash(ps.bats_transects)} | <strong>Vantage Points:</strong> ${valOrDash(ps.bats_vps)}</p>
+                    
+                    <h4>Hazel Dormice</h4>
+                    <p><strong>Habitat Suitability:</strong> ${valOrDash(ps.dormice_habitat)}</p>
+                    <p><strong>Evidence:</strong> ${valOrDash(ps.dormice_evidence)}</p>
+
+                    <h4>Badger</h4>
+                    <p><strong>Field Signs:</strong> ${valOrDash(ps.badger_signs)}</p>
+                    <p><strong>Sett on site:</strong> ${ps.badger_sett_onsite ? 'Yes' : 'No'}</p>
+                    <p><strong>30m Buffer Checked:</strong> ${ps.badger_buffer_checked ? 'Yes' : 'No'}</p>
+
+                    <h4>Reptiles</h4>
+                    <p><strong>Habitat Suitability:</strong> ${valOrDash(ps.reptiles_habitat)}</p>
+                    
+                    <h4>Great Crested Newts</h4>
+                    <p><strong>HSI Score:</strong> ${valOrDash(ps.gcn_hsi)}</p>
+                    <p><strong>Terrestrial Habitat Quality:</strong> ${valOrDash(ps.gcn_habitat)}</p>
+                    <p><strong>Ponds on/within 500m:</strong> ${valOrDash(ps.gcn_ponds)}</p>
+                    
+                    <h4>Birds</h4>
+                    <p><strong>Nesting Opportunities:</strong> ${valOrDash(ps.birds_nesting)}</p>
+                    <p><strong>Notable Species Observed:</strong> ${valOrDash(ps.birds_observed)}</p>
+
+                    <h4>Riparian Mammals</h4>
+                    <p><strong>Waterbody Suitability:</strong> ${valOrDash(ps.riparian_suitability)}</p>
+                    <p><strong>Field Signs:</strong> ${valOrDash(ps.riparian_signs)}</p>
+                    
+                    <h4>Other Protected Species</h4>
+                    <p>${valOrDash(ps.other_species_notes)}</p>
+                </div>`;
+
                 const mitigationContent = document.getElementById('mitigation-content').innerHTML;
-                if (mitigationContent) reportHTML += `<h3 class="text-2xl font-bold mt-8 mb-4 border-b pb-2">3. Potential Impacts & Mitigation</h3><div class="prose prose-sm max-w-none">${mitigationContent}</div>`;
+                if (mitigationContent) reportHTML += `<h3 class="text-2xl font-bold mt-8 mb-4 border-b pb-2">${sectionCounter++}. Potential Impacts & Mitigation</h3><div class="prose prose-sm max-w-none">${mitigationContent}</div>`;
                 const sitePlanInput = document.getElementById('site-plan-upload');
-                if (sitePlanInput.files[0]) reportHTML += `<h3 class="text-2xl font-bold mt-8 mb-4 border-b pb-2">${mitigationContent ? '4.':'3.'} Site Plan</h3><img src="${URL.createObjectURL(sitePlanInput.files[0])}" class="mt-2 rounded-lg max-w-full mx-auto">`;
+                if (sitePlanInput.files[0]) reportHTML += `<h3 class="text-2xl font-bold mt-8 mb-4 border-b pb-2">${sectionCounter}. Site Plan</h3><img src="${URL.createObjectURL(sitePlanInput.files[0])}" class="mt-2 rounded-lg max-w-full mx-auto">`;
                 reportContent.innerHTML = reportHTML;
                 mainContainer.classList.add('hidden');
                 reportOutput.classList.remove('hidden');
             };
             
-            async function callGemini(prompt) {
+            async function callGemini(prompt) { /* ... implementation ... */ }
+            async function generateHabitatDescription(button) { /* ... implementation ... */ }
+            
+            document.getElementById('next-btn').addEventListener('click', () => showStep(currentStep + 1));
+            document.getElementById('prev-btn').addEventListener('click', () => showStep(currentStep - 1));
+            document.getElementById('add-surveyor-btn').addEventListener('click', () => {
+                const container = document.getElementById('surveyors-container');
+                if (container.children.length < 4) {
+                    container.insertAdjacentHTML('beforeend', createSurveyorHTML('', true));
+                }
+                document.getElementById('add-surveyor-btn').classList.toggle('hidden', container.children.length >= 4);
+            });
+            document.getElementById('add-habitat-btn').addEventListener('click', () => document.getElementById('habitats-container').insertAdjacentHTML('beforeend', createHabitatHTML()));
+            document.getElementById('add-building-btn').addEventListener('click', () => document.getElementById('buildings-container').insertAdjacentHTML('beforeend', createBuildingHTML()));
+            document.getElementById('add-tree-btn').addEventListener('click', () => document.getElementById('trees-container').insertAdjacentHTML('beforeend', createTreeHTML()));
+            
+            document.getElementById('save-btn').addEventListener('click', async () => { /* save logic */ });
+            document.getElementById('load-btn').addEventListener('click', async () => { /* load logic */ });
+            document.getElementById('generate-report-btn').addEventListener('click', generateReport);
+            document.getElementById('generate-mitigation-btn').addEventListener('click', async () => { /* mitigation logic */ });
+            document.getElementById('back-to-form-btn').addEventListener('click', () => {
+                 mainContainer.classList.remove('hidden');
+                 reportOutput.classList.remove('hidden');
+            });
+            document.getElementById('print-report-btn').addEventListener('click', () => window.print());
+
+            // --- Full Function Implementations ---
+            window.callGemini = async (prompt) => {
                 showLoader(true);
                 try {
                     const apiKey = "";
@@ -468,8 +833,7 @@
                     showLoader(false);
                 }
             }
-
-            async function generateHabitatDescription(button) {
+             window.generateHabitatDescription = async (button) => {
                 const parcelEntry = button.closest('.parcel-entry');
                 const habitatType = parcelEntry.closest('.habitat-entry').querySelector('.habitat-type').value;
                 const plantList = Array.from(parcelEntry.querySelectorAll('.plant-list-item')).map(p => p.dataset.commonName);
@@ -477,21 +841,9 @@
                 const prompt = `As an expert ecologist, write a professional, descriptive paragraph for a Preliminary Ecological Appraisal report. The habitat is "${habitatType}". The notable plant species recorded in this specific parcel are: ${plantList.join(', ')}. Describe the typical characteristics of this habitat and incorporate the presence of the listed species.`;
                 const description = await callGemini(prompt);
                 if(description) parcelEntry.querySelector('.parcel-description').value = description;
-            }
-            
-            document.getElementById('next-btn').addEventListener('click', () => showStep(currentStep + 1));
-            document.getElementById('prev-btn').addEventListener('click', () => showStep(currentStep - 1));
-            document.getElementById('add-surveyor-btn').addEventListener('click', () => {
-                const container = document.getElementById('surveyors-container');
-                if (container.children.length < 4) {
-                    container.insertAdjacentHTML('beforeend', createSurveyorHTML('', true));
-                }
-                document.getElementById('add-surveyor-btn').classList.toggle('hidden', container.children.length >= 4);
-            });
-            document.getElementById('add-habitat-btn').addEventListener('click', () => document.getElementById('habitats-container').insertAdjacentHTML('beforeend', createHabitatHTML()));
-            document.getElementById('add-species-btn').addEventListener('click', () => document.getElementById('species-container').insertAdjacentHTML('beforeend', createSpeciesHTML()));
-            
-            document.getElementById('save-btn').addEventListener('click', async () => {
+            };
+
+            document.getElementById('save-btn').onclick = async () => {
                 const projectNumber = document.getElementById('projectNumber').value;
                 if (!projectNumber) return showMessage("Project Number is required to save.", true);
                 showLoader(true);
@@ -502,9 +854,9 @@
                 } catch (e) {
                     showMessage("Error saving project. Check console.", true); console.error(e);
                 } finally { showLoader(false); }
-            });
+            };
             
-            document.getElementById('load-btn').addEventListener('click', async () => {
+            document.getElementById('load-btn').onclick = async () => {
                 const projectNumber = document.getElementById('loadProjectNumber').value;
                 if (!projectNumber) return showMessage("Enter a Project Number to load.", true);
                 showLoader(true);
@@ -518,35 +870,34 @@
                 } catch (e) {
                     showMessage("Error loading project. Check console.", true); console.error(e);
                 } finally { showLoader(false); }
-            });
+            };
 
-             document.getElementById('generate-mitigation-btn').addEventListener('click', async () => {
+             document.getElementById('generate-mitigation-btn').onclick = async () => {
                 const data = getProjectDataFromForm();
-                const habitatSummary = data.habitats.filter(h => h.type).map(h => `- ${h.type} containing: ${h.parcels.map(p => p.plants.map(pl => pl.common).join(', ')).join('; ')}`).join('\n');
-                const speciesSummary = data.species.filter(s => s.name).map(s => `- ${s.name}`).join('\n');
-                if (!habitatSummary && !speciesSummary) return showMessage("Please record habitats or species first.", true);
-                const prompt = `As an expert ecologist, review the following summary from a Preliminary Ecological Appraisal. Based on this, provide a bulleted list of potential ecological impacts and recommended mitigation or enhancement measures suitable for a standard PEA report.\n\nHabitats Recorded:\n${habitatSummary}\n\nNotable Species Recorded:\n${speciesSummary}`;
+                const habitatSummary = data.habitats.filter(h => h.type).map(h => `- ${h.type}`).join('\n');
+                const buildingSummary = data.buildings.filter(b => b.number).map(b => `- Building ${b.number} with ${b.suitability} bat roost suitability.`).join('\n');
+                const treeSummary = data.trees.filter(t => t.number).map(t => `- Tree ${t.number} (${t.species}) with ${t.suitability} bat roost suitability.`).join('\n');
+                if (!habitatSummary && !buildingSummary && !treeSummary) return showMessage("Please record habitats, buildings, or trees first.", true);
+                
+                let prompt = `As an expert ecologist, review the following summary from a Preliminary Ecological Appraisal. Based on this, provide a bulleted list of potential ecological impacts and recommended mitigation or enhancement measures suitable for a standard PEA report.\n\n`;
+                if(habitatSummary) prompt += `Habitats Recorded:\n${habitatSummary}\n\n`;
+                if(buildingSummary) prompt += `Buildings Recorded:\n${buildingSummary}\n\n`;
+                if(treeSummary) prompt += `Trees Recorded:\n${treeSummary}`;
+
                 const suggestions = await callGemini(prompt);
                 if (suggestions) {
                     document.getElementById('mitigation-output').classList.remove('hidden');
                     document.getElementById('mitigation-content').innerHTML = suggestions.replace(/\n/g, '<br>');
                 }
-            });
-
-            document.getElementById('generate-report-btn').addEventListener('click', generateReport);
-            document.getElementById('back-to-form-btn').addEventListener('click', () => {
-                 mainContainer.classList.remove('hidden');
-                 reportOutput.classList.remove('hidden');
-            });
-            document.getElementById('print-report-btn').addEventListener('click', () => window.print());
-
+            };
+            
             // --- Initial Setup ---
             try {
                 const app = initializeApp(firebaseConfig);
                 const auth = getAuth(app);
                 db = getFirestore(app);
                 signInAnonymously(auth).catch(err => {
-                    console.error(err);
+                    console.error("Firebase sign-in failed:", err);
                     showMessage("Firebase sign-in failed. Check console and Firebase Auth settings.", true);
                 });
             } catch (e) {
@@ -557,7 +908,8 @@
             showStep(1);
             document.getElementById('surveyors-container').innerHTML = createSurveyorHTML();
             document.getElementById('habitats-container').innerHTML = createHabitatHTML();
-            document.getElementById('species-container').innerHTML = createSpeciesHTML();
+            document.getElementById('buildings-container').innerHTML = createBuildingHTML();
+            document.getElementById('trees-container').innerHTML = createTreeHTML();
         });
     </script>
 </body>
