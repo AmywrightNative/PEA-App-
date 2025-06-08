@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ecological Appraisal App</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .step-active {
+            border-color: #3b82f6;
+            color: #3b82f6;
+        }
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            #report-output, #report-output * {
+                visibility: visible;
+            }
+            #report-output {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+            }
+            .no-print {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+
+    <div class="container mx-auto p-4 sm:p-6 lg:p-8">
+        <div id="loader" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50">
+            <div class="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-white"></div>
+        </div>
+
+        <div id="message-box" class="hidden fixed top-5 right-5 bg-blue-500 text-white py-2 px-4 rounded-lg shadow-lg z-50"></div>
+
+        <div class="bg-white rounded-lg shadow-lg p-6 md:p-8">
+            <h1 class="text-3xl font-bold text-gray-800 mb-2">Preliminary Ecological Appraisal Report</h1>
+            <p class="text-gray-600 mb-6">Onsite data collection and reporting tool.</p>
+            
+            <div class="bg-gray-100 p-4 rounded-lg mb-6 border">
+                <h3 class="font-bold text-lg mb-2">Manage Project Data</h3>
+                <div class="flex flex-wrap items-center gap-4">
+                    <div class="flex-grow">
+                        <label for="loadProjectNumber" class="sr-only">Project Number to Load</label>
+                        <input type="text" id="loadProjectNumber" class="w-full px-4 py-2 border border-gray-300 rounded-lg" placeholder="Enter Project No. to Load">
+                    </div>
+                    <button id="load-btn" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg">Load Project</button>
+                    <button id="save-btn" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg">Save Current Project</button>
+                </div>
+            </div>
+
+            <div id="stepper" class="flex items-center justify-between mb-8 text-sm md:text-base">
+                <div class="step flex-1 flex items-center justify-center border-b-4 pb-2 step-active" data-step="1">
+                    <span class="rounded-full bg-blue-500 text-white w-8 h-8 flex items-center justify-center mr-2">1</span>
+                    <span class="font-medium">Project</span>
+                </div>
+                <div class="step flex-1 flex items-center justify-center border-b-2 pb-2 text-gray-400" data-step="2">
+                    <span class="rounded-full bg-gray-300 text-gray-600 w-8 h-8 flex items-center justify-center mr-2">2</span>
+                    <span class="font-medium">Habitats</span>
+                </div>
+                <div class="step flex-1 flex items-center justify-center border-b-2 pb-2 text-gray-400" data-step="3">
+                    <span class="rounded-full bg-gray-300 text-gray-600 w-8 h-8 flex items-center justify-center mr-2">3</span>
+                    <span class="font-medium">Species</span>
+                </div>
+                 <div class="step flex-1 flex items-center justify-center border-b-2 pb-2 text-gray-400" data-step="4">
+                    <span class="rounded-full bg-gray-300 text-gray-600 w-8 h-8 flex items-center justify-center mr-2">4</span>
+                    <span class="font-medium">Summary</span>
+                </div>
+            </div>
+
+            <form id="pea-form">
+                <div id="step-1" class="step-content">
+                    <h2 class="text-2xl font-semibold text-gray-700 mb-6">1. Project Details</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div><label for="projectName" class="block text-sm font-medium text-gray-700 mb-1">Project Name</label><input type="text" id="projectName" class="w-full px-4 py-2 border border-gray-300 rounded-lg"></div>
+                        <div><label for="projectNumber" class="block text-sm font-medium text-gray-700 mb-1">Project Number</label><input type="text" id="projectNumber" class="w-full px-4 py-2 border border-gray-300 rounded-lg"></div>
+                        <div class="md:col-span-2"><label for="siteAddress" class="block text-sm font-medium text-gray-700 mb-1">Site Address</label><input type="text" id="siteAddress" class="w-full px-4 py-2 border border-gray-300 rounded-lg"></div>
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Surveyor(s)</label>
+                            <div id="surveyors-container" class="space-y-2"></div>
+                            <button type="button" id="add-surveyor-btn" class="mt-2 text-sm text-blue-600 hover:text-blue-800">+ Add Surveyor</button>
+                        </div>
+                        <div><label for="gridReference" class="block text-sm font-medium text-gray-700 mb-1">Grid Reference</label><input type="text" id="gridReference" class="w-full px-4 py-2 border border-gray-300 rounded-lg"></div>
+                        <div><label for="date" class="block text-sm font-medium text-gray-700 mb-1">Date</label><input type="date" id="date" class="w-full px-4 py-2 border border-gray-300 rounded-lg"></div>
+                        <div><label for="startTime" class="block text-sm font-medium text-gray-700 mb-1">Start Time</label><input type="time" id="startTime" class="w-full px-4 py-2 border border-gray-300 rounded-lg"></div>
+                        <div><label for="endTime" class="block text-sm font-medium text-gray-700 mb-1">End Time</label><input type="time" id="endTime" class="w-full px-4 py-2 border border-gray-300 rounded-lg"></div>
+                        <div><label for="temperature" class="block text-sm font-medium text-gray-700 mb-1">Temperature (°C)</label><input type="number" id="temperature" class="w-full px-4 py-2 border border-gray-300 rounded-lg"></div>
+                        <div>
+                            <label for="cloudCover" class="block text-sm font-medium text-gray-700 mb-1">Cloud Cover</label>
+                            <select id="cloudCover" class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-white">
+                                <option value="">Select cloud cover...</option>
+                                <script>
+                                    for(let i = 0; i <= 100; i+=5) {
+                                        document.write(`<option value="${i}%">${i}%</option>`);
+                                    }
+                                </script>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="wind" class="block text-sm font-medium text-gray-700 mb-1">Wind</label>
+                            <select id="wind" class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-white">
+                                <option value="">Select Beaufort scale...</option>
+                                <option value="0 - Calm">0 - Calm (&lt;1 mph): Smoke rises vertically.</option>
+                                <option value="1 - Light Air">1 - Light Air (1-3 mph): Wind motion visible in smoke.</option>
+                                <option value="2 - Light Breeze">2 - Light Breeze (4-7 mph): Wind felt on face; leaves rustle.</option>
+                                <option value="3 - Gentle Breeze">3 - Gentle Breeze (8-12 mph): Leaves and small twigs in constant motion.</option>
+                                <option value="4 - Moderate Breeze">4 - Moderate Breeze (13-18 mph): Raises dust and loose paper.</option>
+                                <option value="5 - Fresh Breeze">5 - Fresh Breeze (19-24 mph): Small trees in leaf begin to sway.</option>
+                                <option value="6 - Strong Breeze">6 - Strong Breeze (25-31 mph): Large branches in motion.</option>
+                                <option value="7 - Near Gale">7 - Near Gale (32-38 mph): Whole trees in motion.</option>
+                                <option value="8 - Gale">8 - Gale (39-46 mph): Twigs break off trees.</option>
+                                <option value="9 - Strong Gale">9 - Strong Gale (47-54 mph): Slight structural damage occurs.</option>
+                                <option value="10 - Storm">10 - Storm (55-63 mph): Trees uprooted.</option>
+                                <option value="11 - Violent Storm">11 - Violent Storm (64-72 mph): Widespread damage.</option>
+                                <option value="12 - Hurricane">12 - Hurricane (≥73 mph): Devastation.</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="rain" class="block text-sm font-medium text-gray-700 mb-1">Rain</label>
+                            <select id="rain" class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-white">
+                                <option value="">Select rain condition...</option>
+                                <option value="None">None</option>
+                                <option value="Drizzle">Drizzle</option>
+                                <option value="Light">Light</option>
+                                <option value="Moderate">Moderate</option>
+                                <option value="Heavy">Heavy</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="groundConditions" class="block text-sm font-medium text-gray-700 mb-1">Ground Conditions</label>
+                            <select id="groundConditions" class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-white">
+                                <option value="">Select ground conditions...</option>
+                                <option value="Deep cracks">Deep cracks</option>
+                                <option value="Dry">Dry</option>
+                                <option value="Damp">Damp</option>
+                                <option value="Wet">Wet</option>
+                                <option value="Waterlogged">Waterlogged</option>
+                            </select>
+                        </div>
+                        <div class="md:col-span-2"><label for="surveyLimitations" class="block text-sm font-medium text-gray-700 mb-1">Survey Limitations</label><textarea id="surveyLimitations" rows="3" class="w-full px-4 py-2 border border-gray-300 rounded-lg"></textarea></div>
+                    </div>
+                </div>
+
+                <div id="step-2" class="step-content hidden">
+                    <h2 class="text-2xl font-semibold text-gray-700 mb-6">2. Habitats and Parcels</h2>
+                    <div id="habitats-container" class="space-y-6"></div>
+                    <button type="button" id="add-habitat-btn" class="mt-6 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700">Add Habitat</button>
+                </div>
+
+                <div id="step-3" class="step-content hidden">
+                    <h2 class="text-2xl font-semibold text-gray-700 mb-6">3. Notable Species</h2>
+                    <div id="species-container" class="space-y-6"></div>
+                    <button type="button" id="add-species-btn" class="mt-6 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700">Add Species</button>
+                </div>
+
+                <div id="step-4" class="step-content hidden">
+                    <h2 class="text-2xl font-semibold text-gray-700 mb-6">4. Summary and Report</h2>
+                    <div class="bg-gray-50 p-6 rounded-lg border">
+                        <h3 class="font-bold text-xl mb-4">Appraisal Summary</h3>
+                        <div id="summary-content" class="space-y-4"></div>
+                         <div class="mt-6">
+                            <button type="button" id="generate-mitigation-btn" class="w-full text-white bg-gradient-to-r from-purple-500 to-pink-500 hover:bg-gradient-to-l focus:ring-4 focus:outline-none focus:ring-purple-200 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
+                                ✨ Generate Mitigation Suggestions with AI
+                            </button>
+                        </div>
+                    </div>
+                    <div id="mitigation-output" class="hidden mt-6 bg-gray-50 p-6 rounded-lg border">
+                        <h3 class="font-bold text-xl mb-4">AI-Generated Mitigation Suggestions</h3>
+                        <div id="mitigation-content" class="prose max-w-none prose-sm"></div>
+                    </div>
+                    <div class="mt-6">
+                        <h3 class="text-xl font-semibold text-gray-700 mb-2">Site Plan/Map</h3>
+                        <p class="text-gray-600 mb-4">Upload a site plan or map showing target note locations.</p>
+                        <input type="file" accept="image/*" id="site-plan-upload" class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+                    </div>
+                </div>
+            </form>
+
+            <div class="mt-8 pt-5 border-t border-gray-200 flex justify-between">
+                <button id="prev-btn" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-lg hidden">Previous</button>
+                <button id="next-btn" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg">Next</button>
+                <button id="generate-report-btn" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg hidden">Generate Report</button>
+            </div>
+        </div>
+    </div>
+    
+    <datalist id="plant-datalist"></datalist>
+
+    <div id="report-output" class="hidden mt-8 bg-white p-8 rounded-lg shadow-lg">
+        <div id="report-content" class="prose max-w-none"></div>
+        <div class="mt-8 text-center no-print">
+            <button id="back-to-form-btn" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-6 rounded-lg mr-4">Back to Form</button>
+            <button id="print-report-btn" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg">Print Report</button>
+        </div>
+    </div>
+
+    <!-- Main App Script -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        document.addEventListener('DOMContentLoaded', () => {
+
+            const firebaseConfig = {
+              apiKey: "AIzaSyDRa-XGqAbwoD0nntMSgdqEKdzse7n6sO8",
+              authDomain: "pea-pro-former-app.firebaseapp.com",
+              projectId: "pea-pro-former-app",
+              storageBucket: "pea-pro-former-app.appspot.com",
+              messagingSenderId: "101171413137",
+              appId: "1:101171413137:web:cdd9b1c4cbb8c4a697bf30"
+            };
+            
+            let db;
+            let currentStep = 1;
+            
+            const loader = document.getElementById('loader');
+            const messageBox = document.getElementById('message-box');
+            const peaForm = document.getElementById('pea-form');
+            const mainContainer = document.querySelector('.container');
+            const reportOutput = document.getElementById('report-output');
+            
+            const showLoader = (show) => loader.classList.toggle('hidden', !show);
+            const showMessage = (msg, isError = false) => {
+                messageBox.textContent = msg;
+                messageBox.className = `fixed top-5 right-5 text-white py-2 px-4 rounded-lg shadow-lg z-50 ${isError ? 'bg-red-500' : 'bg-green-500'}`;
+                messageBox.classList.remove('hidden');
+                setTimeout(() => messageBox.classList.add('hidden'), 3000);
+            };
+
+            const plantDatabase = [
+                { common: "Alder", latin: "Alnus glutinosa" }, { common: "Ash", latin: "Fraxinus excelsior" }, { common: "Aspen", latin: "Populus tremula" },
+                { common: "Beech", latin: "Fagus sylvatica" }, { common: "Silver Birch", latin: "Betula pendula" }, { common: "Downy Birch", latin: "Betula pubescens" },
+                { common: "Blackthorn", latin: "Prunus spinosa" }, { common: "Box", latin: "Buxus sempervirens" }, { common: "Bird Cherry", latin: "Prunus padus" },
+                { common: "Wild Cherry", latin: "Prunus avium" }, { common: "Crab Apple", latin: "Malus sylvestris" }, { common: "Dogwood", latin: "Cornus sanguinea" },
+                { common: "Elder", latin: "Sambucus nigra" }, { common: "Hawthorn", latin: "Crataegus monogyna" }, { common: "Hazel", latin: "Corylus avellana" },
+                { common: "Holly", latin: "Ilex aquifolium" }, { common: "Hornbeam", latin: "Carpinus betulus" }, { common: "Field Maple", latin: "Acer campestre" },
+                { common: "Pedunculate Oak", latin: "Quercus robur" }, { common: "Sessile Oak", latin: "Quercus petraea" }, { common: "Rowan", latin: "Sorbus aucuparia" },
+                { common: "Goat Willow", latin: "Salix caprea" }, { common: "White Willow", latin: "Salix alba" }, { common: "Yew", latin: "Taxus baccata" },
+                { common: "Bluebell", latin: "Hyacinthoides non-scripta" }, { common: "Bugle", latin: "Ajuga reptans" }, { common: "Columbine", latin: "Aquilegia vulgaris" },
+                { common: "Cowslip", latin: "Primula veris" }, { common: "Daisy", latin: "Bellis perennis" }, { common: "Dandelion", latin: "Taraxacum officinale" },
+                { common: "Foxglove", latin: "Digitalis purpurea" }, { common: "Ground Ivy", latin: "Glechoma hederacea" }, { common: "Harebell", latin: "Campanula rotundifolia" },
+                { common: "Herb Robert", latin: "Geranium robertianum" }, { common: "Kidney Vetch", latin: "Anthyllis vulneraria" }, { common: "Lady's Mantle", latin: "Alchemilla mollis" },
+                { common: "Lesser Celandine", latin: "Ranunculus ficaria" }, { common: "Marsh Marigold", latin: "Caltha palustris" }, { common: "Meadowsweet", latin: "Filipendula ulmaria" },
+                { common: "Oxeye Daisy", latin: "Leucanthemum vulgare" }, { common: "Primrose", latin: "Primula vulgaris" }, { common: "Ragged Robin", latin: "Lychnis flos-cuculi" },
+                { common: "Red Campion", latin: "Silene dioica" }, { common: "Sea Thrift", latin: "Armeria maritima" }, { common: "Selfheal", latin: "Prunella vulgaris" },
+                { common: "Stinging Nettle", latin: "Urtica dioica" }, { common: "Sweet Violet", latin: "Viola odorata" }, { common: "Teasel", latin: "Dipsacus fullonum" },
+                { common: "Tufted Vetch", latin: "Vicia cracca" }, { common: "White Clover", latin: "Trifolium repens" }, { common: "Wood Anemone", latin: "Anemone nemorosa" },
+                { common: "Wood Sorrel", latin: "Oxalis acetosella" }, { common: "Yarrow", latin: "Achillea millefolium" }, { common: "Yellow Archangel", latin: "Lamiastrum galeobdolon" },
+                { common: "Yellow Iris", latin: "Iris pseudacorus" }, { common: "Common Bent", latin: "Agrostis capillaris" }, { common: "Crested Dog's-tail", latin: "Cynosurus cristatus" },
+                { common: "Cock's-foot", latin: "Dactylis glomerata" }, { common: "Pendulous Sedge", latin: "Carex pendula" }, { common: "Soft Rush", latin: "Juncus effusus" },
+                { common: "Yorkshire Fog", latin: "Holcus lanatus" }, { common: "Male Fern", latin: "Dryopteris filix-mas" }, { common: "Hart's-tongue Fern", latin: "Asplenium scolopendrium" },
+                { common: "Bracken", latin: "Pteridium aquilinum" }
+            ];
+            const plantDatalist = document.getElementById('plant-datalist');
+            plantDatabase.forEach(plant => {
+                const option = document.createElement('option');
+                option.value = plant.common;
+                plantDatalist.appendChild(option);
+            });
+
+            const updateStepper = () => {
+                document.querySelectorAll('#stepper .step').forEach((stepEl) => {
+                    const stepNum = parseInt(stepEl.dataset.step);
+                    stepEl.classList.toggle('step-active', stepNum === currentStep);
+                    stepEl.classList.toggle('border-blue-500', stepNum === currentStep);
+                    stepEl.classList.toggle('border-b-4', stepNum === currentStep);
+                    stepEl.classList.toggle('text-gray-400', stepNum !== currentStep);
+                    const icon = stepEl.querySelector('span:first-child');
+                    icon.classList.toggle('bg-blue-500', stepNum <= currentStep);
+                    icon.classList.toggle('text-white', stepNum <= currentStep);
+                    icon.classList.toggle('bg-gray-300', stepNum > currentStep);
+                    icon.classList.toggle('text-gray-600', stepNum > currentStep);
+                });
+            };
+
+            const showStep = (step) => {
+                currentStep = step;
+                document.querySelectorAll('.step-content').forEach(el => el.classList.add('hidden'));
+                document.getElementById(`step-${step}`).classList.remove('hidden');
+                document.getElementById('prev-btn').classList.toggle('hidden', step === 1);
+                document.getElementById('next-btn').classList.toggle('hidden', step === 4);
+                document.getElementById('generate-report-btn').classList.toggle('hidden', step !== 4);
+                if (step === 4) populateSummary();
+                updateStepper();
+            };
+
+            const createSurveyorHTML = (name = '', canRemove = false) => {
+                const count = document.querySelectorAll('.surveyor-item').length + 1;
+                return `<div class="flex items-center space-x-2 surveyor-item"><input type="text" value="${name}" class="surveyor-name w-full px-4 py-2 border border-gray-300 rounded-lg" placeholder="Surveyor ${count} Name">${canRemove ? '<button type="button" class="remove-btn text-red-500 hover:text-red-700">✕</button>' : ''}</div>`;
+            };
+            const createHabitatHTML = (data = {}) => {
+                const count = document.querySelectorAll('.habitat-entry').length + 1;
+                const parcelsHTML = (data.parcels || []).map(p => createParcelHTML(p)).join('');
+                return `<div class="habitat-entry bg-gray-50 p-4 rounded-lg border"><h3 class="font-semibold text-lg mb-2">Habitat ${count}</h3><div><label class="block text-sm font-medium text-gray-700 mb-1">Habitat Type</label><input type="text" class="habitat-type w-full px-4 py-2 border border-gray-300 rounded-lg" placeholder="e.g., Broadleaved woodland" value="${data.type || ''}"></div><div class="parcels-container mt-4 space-y-4 border-t pt-4">${parcelsHTML}</div><button type="button" class="add-parcel-btn mt-4 inline-flex items-center px-3 py-1.5 border border-dashed text-sm font-medium rounded-md text-blue-700 bg-blue-100 hover:bg-blue-200">Add Parcel</button></div>`;
+            };
+            const createParcelHTML = (data = {}) => {
+                const plantsHTML = (data.plants || []).map(p => createPlantHTML(p)).join('');
+                return `<div class="parcel-entry bg-white p-4 rounded-lg border border-gray-200"><div class="flex justify-between items-center"><h4 class="font-semibold text-md">Parcel</h4><button type="button" class="remove-btn text-red-500 hover:text-red-700 font-bold text-xs">Remove</button></div><div><label class="block text-sm font-medium text-gray-700 mt-2 mb-1">Parcel Number / Ref</label><input type="text" class="parcel-ref w-full px-3 py-1.5 border border-gray-300 rounded-lg text-sm" placeholder="e.g., P123" value="${data.ref || ''}"></div><div class="mt-2 relative"><label class="block text-sm font-medium text-gray-700 mb-1">Description</label><textarea class="parcel-description w-full px-3 py-1.5 border border-gray-300 rounded-lg text-sm" rows="3">${data.description || ''}</textarea><button type="button" class="generate-desc-btn absolute bottom-2 right-2 text-xs text-white bg-gradient-to-r from-purple-500 to-pink-500 hover:bg-gradient-to-l rounded-full px-2 py-1">✨ AI</button></div><div class="mt-4 border-t pt-3"><label class="block text-sm font-medium text-gray-700 mb-1">Search and Add Plant</label><input type="text" list="plant-datalist" class="plant-search w-full px-3 py-1.5 border border-gray-300 rounded-lg text-sm" placeholder="Start typing..."><div class="plant-list-container mt-2 space-y-2">${plantsHTML}</div></div></div>`;
+            };
+            const createPlantHTML = (plant) => `<div class="plant-list-item bg-gray-100 p-2 rounded-md flex justify-between items-center" data-common-name="${plant.common}" data-latin-name="${plant.latin}"><p class="text-sm"><strong>${plant.common}</strong> <em>(${plant.latin})</em></p><button type="button" class="remove-btn text-red-500 hover:text-red-700 font-bold text-xs">✕</button></div>`;
+            const createSpeciesHTML = (data = {}) => {
+                const count = document.querySelectorAll('.species-entry').length + 1;
+                return `<div class="species-entry bg-gray-50 p-4 rounded-lg border"><h3 class="font-semibold text-lg mb-2">Species ${count}</h3><div class="grid grid-cols-1 md:grid-cols-2 gap-6"><div><label class="block text-sm font-medium text-gray-700 mb-1">Species Name</label><input type="text" class="species-name w-full px-4 py-2 border border-gray-300 rounded-lg" value="${data.name || ''}" placeholder="e.g., Pipistrelle Bat"></div><div><label class="block text-sm font-medium text-gray-700 mb-1">Evidence</label><input type="text" class="species-evidence w-full px-4 py-2 border border-gray-300 rounded-lg" value="${data.evidence || ''}" placeholder="e.g., Droppings, Sighting"></div></div><div class="mt-4"><label class="block text-sm font-medium text-gray-700 mb-1">Description of Evidence</label><textarea class="species-description w-full px-4 py-2 border border-gray-300 rounded-lg" rows="3">${data.description || ''}</textarea></div><div class="mt-4"><label class="block text-sm font-medium text-gray-700 mb-1">Photo</label><input type="file" accept="image/*" class="species-photo w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"></div></div>`;
+            };
+            
+            peaForm.addEventListener('click', e => {
+                if (e.target.matches('.remove-btn')) {
+                    e.target.closest('.surveyor-item, .parcel-entry, .species-entry, .plant-list-item')?.remove();
+                }
+                if (e.target.matches('.add-parcel-btn')) {
+                    e.target.previousElementSibling.insertAdjacentHTML('beforeend', createParcelHTML());
+                }
+                if (e.target.matches('.generate-desc-btn')) {
+                    generateHabitatDescription(e.target);
+                }
+            });
+
+            peaForm.addEventListener('input', e => {
+                if (e.target.matches('.plant-search')) {
+                    const plant = plantDatabase.find(p => p.common.toLowerCase() === e.target.value.toLowerCase());
+                    if (plant) {
+                        const container = e.target.nextElementSibling;
+                        if (!Array.from(container.children).some(el => el.dataset.commonName === plant.common)) {
+                            container.insertAdjacentHTML('beforeend', createPlantHTML(plant));
+                        }
+                        e.target.value = '';
+                    }
+                }
+            });
+
+            const getProjectDataFromForm = () => {
+                const form = document.getElementById('pea-form');
+                const surveyorNames = Array.from(form.querySelectorAll('.surveyor-name')).map(input => input.value).filter(name => name);
+                const habitats = Array.from(form.querySelectorAll('.habitat-entry')).map(h => ({
+                    type: h.querySelector('.habitat-type').value,
+                    parcels: Array.from(h.querySelectorAll('.parcel-entry')).map(p => ({
+                        ref: p.querySelector('.parcel-ref').value,
+                        description: p.querySelector('.parcel-description').value,
+                        plants: Array.from(p.querySelectorAll('.plant-list-item')).map(plant => ({
+                            common: plant.dataset.commonName,
+                            latin: plant.dataset.latinName
+                        }))
+                    }))
+                }));
+                const species = Array.from(form.querySelectorAll('.species-entry')).map(s => ({
+                    name: s.querySelector('.species-name').value,
+                    evidence: s.querySelector('.species-evidence').value,
+                    description: s.querySelector('.species-description').value
+                }));
+                return {
+                    projectName: form.projectName.value, projectNumber: form.projectNumber.value, siteAddress: form.siteAddress.value,
+                    surveyors: surveyorNames, gridReference: form.gridReference.value, date: form.date.value,
+                    startTime: form.startTime.value, endTime: form.endTime.value, temperature: form.temperature.value,
+                    cloudCover: form.cloudCover.value, wind: form.wind.value, rain: form.rain.value,
+                    groundConditions: form.groundConditions.value, surveyLimitations: form.surveyLimitations.value, habitats, species
+                };
+            };
+            
+            const populateFormWithData = (data) => {
+                const form = document.getElementById('pea-form');
+                form.reset();
+                const surveyorsContainer = document.getElementById('surveyors-container');
+                const habitatsContainer = document.getElementById('habitats-container');
+                const speciesContainer = document.getElementById('species-container');
+                [surveyorsContainer, habitatsContainer, speciesContainer].forEach(c => c.innerHTML = '');
+
+                form.projectName.value = data.projectName || '';
+                form.projectNumber.value = data.projectNumber || '';
+                form.siteAddress.value = data.siteAddress || '';
+                if (data.surveyors && data.surveyors.length > 0) {
+                    data.surveyors.forEach((name, i) => surveyorsContainer.insertAdjacentHTML('beforeend', createSurveyorHTML(name, i > 0)));
+                } else { surveyorsContainer.innerHTML = createSurveyorHTML(); }
+                document.getElementById('add-surveyor-btn').classList.toggle('hidden', (data.surveyors?.length || 0) >= 4);
+
+                Object.keys(data).forEach(key => {
+                    if(form[key] && typeof form[key] !== 'function') form[key].value = data[key] || '';
+                });
+
+                if(data.habitats?.length) data.habitats.forEach(h => habitatsContainer.insertAdjacentHTML('beforeend', createHabitatHTML(h)));
+                else habitatsContainer.innerHTML = createHabitatHTML();
+                
+                if(data.species?.length) data.species.forEach(s => speciesContainer.insertAdjacentHTML('beforeend', createSpeciesHTML(s)));
+                else speciesContainer.innerHTML = createSpeciesHTML();
+            };
+
+            const populateSummary = () => {
+                const data = getProjectDataFromForm();
+                let summaryHTML = `<p><strong>Project:</strong> ${data.projectName||'N/A'} (${data.projectNumber||'N/A'})</p><p><strong>Site:</strong> ${data.siteAddress||'N/A'}</p><p><strong>Date:</strong> ${data.date||'N/A'}</p><hr class="my-4">`;
+                data.habitats.forEach(h => {
+                    if (h.type) {
+                        summaryHTML += `<div><h4 class="font-semibold text-lg">${h.type}</h4>`;
+                        if (h.parcels.length > 0) summaryHTML += `<ul class="list-disc list-inside ml-4">${h.parcels.map(p => `<li>${p.ref||'Unnamed Parcel'} (${p.plants.length} plants)</li>`).join('')}</ul>`;
+                        summaryHTML += `</div>`;
+                    }
+                });
+                if (data.species.some(s => s.name)) {
+                    summaryHTML += `<hr class="my-4"><h4 class="font-semibold text-lg">Notable Species:</h4><ul>${data.species.filter(s => s.name).map(s => `<li>${s.name}</li>`).join('')}</ul>`;
+                }
+                document.getElementById('summary-content').innerHTML = summaryHTML;
+            };
+
+            const generateReport = () => {
+                const reportData = getProjectDataFromForm();
+                const reportContent = document.getElementById('report-content');
+                let reportHTML = `<div class="text-center mb-8"><h2 class="text-3xl font-bold">${reportData.projectName||"Untitled Project"}</h2><p class="text-lg">${reportData.siteAddress||"No address"}</p><p><strong>Project No:</strong> ${reportData.projectNumber||"N/A"} | <strong>Grid Ref:</strong> ${reportData.gridReference||"N/A"}</p></div><div class="mb-6 p-4 bg-gray-50 rounded-lg"><h3 class="text-xl font-bold mb-4 border-b pb-2">Survey Details</h3><div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 text-sm"><div><p><strong>Date:</strong> ${reportData.date||'N/A'}</p><p><strong>Ecologist(s):</strong> ${reportData.surveyors.join(', ')||'N/A'}</p><p><strong>Start Time:</strong> ${reportData.startTime||'N/A'}</p><p><strong>End Time:</strong> ${reportData.endTime||'N/A'}</p></div><div><p><strong>Temperature:</strong> ${reportData.temperature?reportData.temperature+'°C':'N/A'}</p><p><strong>Cloud cover:</strong> ${reportData.cloudCover||'N/A'}</p><p><strong>Wind:</strong> ${reportData.wind||'N/A'}</p><p><strong>Rain:</strong> ${reportData.rain||'N/A'}</p></div><div class="md:col-span-2 mt-2"><p><strong>Ground Conditions:</strong> ${reportData.groundConditions||'N/A'}</p></div><div class="md:col-span-2 mt-2"><p><strong>Survey Limitations:</strong> ${reportData.surveyLimitations||'None'}</p></div></div></div>`;
+                reportHTML += `<h3 class="text-2xl font-bold mt-8 mb-4 border-b pb-2">1. Habitats and Plant Species</h3>`;
+                reportData.habitats.forEach(h => {
+                    if (h.type) {
+                        reportHTML += `<div class="mb-6 break-inside-avoid"><h4 class="text-xl font-bold">${h.type}</h4>`;
+                        h.parcels.forEach(p => {
+                            reportHTML += `<div class="ml-4 mt-2 p-3 bg-gray-50 rounded-lg"><h5 class="font-semibold">Parcel: ${p.ref||"Unnamed Parcel"}</h5><p class="text-sm">${p.description}</p>`;
+                            if (p.plants.length > 0) reportHTML += `<h6 class="font-semibold mt-2">Plant Species Recorded:</h6><ul class="list-disc list-inside text-sm">${p.plants.map(pl=>`<li><strong>${pl.common}</strong> <em>(${pl.latin})</em></li>`).join('')}</ul>`;
+                            reportHTML += `</div>`;
+                        });
+                        reportHTML += `</div>`;
+                    }
+                });
+                reportHTML += `<h3 class="text-2xl font-bold mt-8 mb-4 border-b pb-2">2. Notable Species</h3>`;
+                const speciesPhotoInputs = document.querySelectorAll('.species-entry .species-photo');
+                reportData.species.forEach((s, i) => {
+                    if (s.name) {
+                        reportHTML += `<div class="mb-4 break-inside-avoid"><h4 class="text-xl font-bold">${s.name}</h4><p><strong>Evidence:</strong> ${s.evidence}</p><p>${s.description}</p>`;
+                        if (speciesPhotoInputs[i]?.files[0]) reportHTML += `<img src="${URL.createObjectURL(speciesPhotoInputs[i].files[0])}" class="mt-2 rounded-lg max-w-sm mx-auto">`;
+                        reportHTML += `</div>`;
+                    }
+                });
+                const mitigationContent = document.getElementById('mitigation-content').innerHTML;
+                if (mitigationContent) reportHTML += `<h3 class="text-2xl font-bold mt-8 mb-4 border-b pb-2">3. Potential Impacts & Mitigation</h3><div class="prose prose-sm max-w-none">${mitigationContent}</div>`;
+                const sitePlanInput = document.getElementById('site-plan-upload');
+                if (sitePlanInput.files[0]) reportHTML += `<h3 class="text-2xl font-bold mt-8 mb-4 border-b pb-2">${mitigationContent ? '4.':'3.'} Site Plan</h3><img src="${URL.createObjectURL(sitePlanInput.files[0])}" class="mt-2 rounded-lg max-w-full mx-auto">`;
+                reportContent.innerHTML = reportHTML;
+                mainContainer.classList.add('hidden');
+                reportOutput.classList.remove('hidden');
+            };
+            
+            async function callGemini(prompt) {
+                showLoader(true);
+                try {
+                    const apiKey = "";
+                    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+                    const payload = { contents: [{ role: "user", parts: [{ text: prompt }] }] };
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    if (!response.ok) throw new Error(`API request failed: ${response.statusText}`);
+                    const result = await response.json();
+                    if (result.candidates?.[0]?.content?.parts?.[0]) {
+                        return result.candidates[0].content.parts[0].text;
+                    }
+                    throw new Error("Invalid response structure from API.");
+                } catch (error) {
+                    console.error("Gemini API call failed:", error);
+                    showMessage("AI generation failed. Please check console.", true);
+                    return '';
+                } finally {
+                    showLoader(false);
+                }
+            }
+
+            async function generateHabitatDescription(button) {
+                const parcelEntry = button.closest('.parcel-entry');
+                const habitatType = parcelEntry.closest('.habitat-entry').querySelector('.habitat-type').value;
+                const plantList = Array.from(parcelEntry.querySelectorAll('.plant-list-item')).map(p => p.dataset.commonName);
+                if (!habitatType) { showMessage("Please enter a Habitat Type first.", true); return; }
+                const prompt = `As an expert ecologist, write a professional, descriptive paragraph for a Preliminary Ecological Appraisal report. The habitat is "${habitatType}". The notable plant species recorded in this specific parcel are: ${plantList.join(', ')}. Describe the typical characteristics of this habitat and incorporate the presence of the listed species.`;
+                const description = await callGemini(prompt);
+                if(description) parcelEntry.querySelector('.parcel-description').value = description;
+            }
+            
+            document.getElementById('next-btn').addEventListener('click', () => showStep(currentStep + 1));
+            document.getElementById('prev-btn').addEventListener('click', () => showStep(currentStep - 1));
+            document.getElementById('add-surveyor-btn').addEventListener('click', () => {
+                const container = document.getElementById('surveyors-container');
+                if (container.children.length < 4) {
+                    container.insertAdjacentHTML('beforeend', createSurveyorHTML('', true));
+                }
+                document.getElementById('add-surveyor-btn').classList.toggle('hidden', container.children.length >= 4);
+            });
+            document.getElementById('add-habitat-btn').addEventListener('click', () => document.getElementById('habitats-container').insertAdjacentHTML('beforeend', createHabitatHTML()));
+            document.getElementById('add-species-btn').addEventListener('click', () => document.getElementById('species-container').insertAdjacentHTML('beforeend', createSpeciesHTML()));
+            
+            document.getElementById('save-btn').addEventListener('click', async () => {
+                const projectNumber = document.getElementById('projectNumber').value;
+                if (!projectNumber) return showMessage("Project Number is required to save.", true);
+                showLoader(true);
+                try {
+                    if (!db) throw new Error("Database not initialized.");
+                    await setDoc(doc(db, "projects", projectNumber), getProjectDataFromForm());
+                    showMessage("Project saved successfully!");
+                } catch (e) {
+                    showMessage("Error saving project. Check console.", true); console.error(e);
+                } finally { showLoader(false); }
+            });
+            
+            document.getElementById('load-btn').addEventListener('click', async () => {
+                const projectNumber = document.getElementById('loadProjectNumber').value;
+                if (!projectNumber) return showMessage("Enter a Project Number to load.", true);
+                showLoader(true);
+                try {
+                     if (!db) throw new Error("Database not initialized.");
+                    const docSnap = await getDoc(doc(db, "projects", projectNumber));
+                    if (docSnap.exists()) {
+                        populateFormWithData(docSnap.data());
+                        showMessage("Project loaded successfully!");
+                    } else { showMessage("No project found with that number.", true); }
+                } catch (e) {
+                    showMessage("Error loading project. Check console.", true); console.error(e);
+                } finally { showLoader(false); }
+            });
+
+             document.getElementById('generate-mitigation-btn').addEventListener('click', async () => {
+                const data = getProjectDataFromForm();
+                const habitatSummary = data.habitats.filter(h => h.type).map(h => `- ${h.type} containing: ${h.parcels.map(p => p.plants.map(pl => pl.common).join(', ')).join('; ')}`).join('\n');
+                const speciesSummary = data.species.filter(s => s.name).map(s => `- ${s.name}`).join('\n');
+                if (!habitatSummary && !speciesSummary) return showMessage("Please record habitats or species first.", true);
+                const prompt = `As an expert ecologist, review the following summary from a Preliminary Ecological Appraisal. Based on this, provide a bulleted list of potential ecological impacts and recommended mitigation or enhancement measures suitable for a standard PEA report.\n\nHabitats Recorded:\n${habitatSummary}\n\nNotable Species Recorded:\n${speciesSummary}`;
+                const suggestions = await callGemini(prompt);
+                if (suggestions) {
+                    document.getElementById('mitigation-output').classList.remove('hidden');
+                    document.getElementById('mitigation-content').innerHTML = suggestions.replace(/\n/g, '<br>');
+                }
+            });
+
+            document.getElementById('generate-report-btn').addEventListener('click', generateReport);
+            document.getElementById('back-to-form-btn').addEventListener('click', () => {
+                 mainContainer.classList.remove('hidden');
+                 reportOutput.classList.remove('hidden');
+            });
+            document.getElementById('print-report-btn').addEventListener('click', () => window.print());
+
+            // --- Initial Setup ---
+            try {
+                const app = initializeApp(firebaseConfig);
+                const auth = getAuth(app);
+                db = getFirestore(app);
+                signInAnonymously(auth).catch(err => {
+                    console.error(err);
+                    showMessage("Firebase sign-in failed. Check console and Firebase Auth settings.", true);
+                });
+            } catch (e) {
+                console.error("Firebase initialization failed:", e);
+                showMessage("Could not connect to database. Check Firebase config in code.", true);
+            }
+            
+            showStep(1);
+            document.getElementById('surveyors-container').innerHTML = createSurveyorHTML();
+            document.getElementById('habitats-container').innerHTML = createHabitatHTML();
+            document.getElementById('species-container').innerHTML = createSpeciesHTML();
+        });
+    </script>
+</body>
+</html>
